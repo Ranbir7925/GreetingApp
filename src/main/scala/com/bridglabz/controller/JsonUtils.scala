@@ -1,8 +1,7 @@
-package com.bridglabz.utils
+package com.bridglabz.controller
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import com.bridglabz.db.Greeting
-import com.bridglabz.domain.GreetingRequest
+import com.bridglabz.models.{Greeting, GreetingRequest}
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 trait JsonUtils extends SprayJsonSupport with DefaultJsonProtocol {
 

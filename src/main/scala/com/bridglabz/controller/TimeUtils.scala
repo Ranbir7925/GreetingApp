@@ -1,4 +1,4 @@
-package com.bridglabz.utils
+package com.bridglabz.controller
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 

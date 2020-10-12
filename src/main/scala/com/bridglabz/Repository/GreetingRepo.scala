@@ -1,11 +1,10 @@
-package com.bridglabz.user
+package com.bridglabz.Repository
 
 import java.util.UUID
 
 import com.bridglabz.db.DbConfig.greeting
-import com.bridglabz.db.Greeting
-import com.bridglabz.domain.GreetingRequest
-import com.bridglabz.utils.JsonUtils
+import com.bridglabz.models.{Greeting, GreetingRequest}
+import com.bridglabz.controller.JsonUtils
 import org.mongodb.scala.Completed
 
 import scala.concurrent.Future

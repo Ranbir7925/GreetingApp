@@ -1,13 +1,14 @@
 package com.bridglabz.db
 
-import org.bson.codecs.configuration.CodecRegistry
+import com.bridglabz.models.Greeting
+import org.bson.codecs.configuration.CodecRegistries._
+import org.bson.codecs.configuration.{CodecRegistries, CodecRegistry}
+import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
+import org.mongodb.scala.bson.codecs.Macros._
+import org.mongodb.scala.{MongoClient, MongoCollection}
 
 object DbConfig {
-  import org.bson.codecs.configuration.CodecRegistries
-  import org.bson.codecs.configuration.CodecRegistries._
-  import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
-  import org.mongodb.scala.bson.codecs.Macros._
-  import org.mongodb.scala.{MongoClient, MongoCollection}
+
 
   private val registry: CodecRegistry = CodecRegistries.fromProviders(classOf[Greeting])
 

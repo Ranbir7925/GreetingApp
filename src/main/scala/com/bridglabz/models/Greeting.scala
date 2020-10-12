@@ -1,3 +1,3 @@
-package com.bridglabz.models class Greeting {
+package com.bridglabz.models
 
-}
+case class Greeting(_id: String, name: String, message: String)

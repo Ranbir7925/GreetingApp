@@ -2,9 +2,8 @@ package com.bridglabz.service
 
 import akka.NotUsed
 import akka.stream.scaladsl.Source
-import com.bridglabz.db.Greeting
-import com.bridglabz.domain.GreetingRequest
-import com.bridglabz.user.GreetingRepo
+import com.bridglabz.models.{Greeting, GreetingRequest}
+import com.bridglabz.Repository.GreetingRepo
 import org.mongodb.scala.Completed
 
 import scala.concurrent.Await
