@@ -1,46 +1,23 @@
-import com.bridglabz.WebServer.system.dispatcher
-import com.bridglabz.WebServer.{dispatcher, materialize, routeConfig, routes, system}
-import akka.actor.ActorSystem
-import akka.actor.testkit.typed.scaladsl.ActorTestKit
-import akka.http.javadsl.server.Directives.route
-import akka.http.scaladsl.model.{HttpEntity, HttpMethods, HttpRequest, MediaTypes, StatusCodes}
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import akka.stream.ActorMaterializer
 import akka.util.ByteString
-import com.bridglabz.user.GreetingRepo
+import com.bridglabz.GreetingRouteConfig
+import com.bridglabz.controller.WebServer.routes
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Matchers, WordSpec}
-import scala.concurrent.ExecutionContext.Implicits.global
 
 
-class RestTest extends WordSpec with Matchers with ScalatestRouteTest with ScalaFutures  {
-//  lazy val testKit = ActorTestKit()
-//  implicit def typedSystem = testKit.system
-//  override def createActorSystem(): akka.actor.ActorSystem =
-//    testKit.system.classicSystem
-//akka http api testing
-////  val userRegistry = testKit.createTestProbe()
-////  lazy val routes = new com.bridglabz.GreetingRouteConfig()
-//
-//  val userRegistry = testKit.spawn(GreetingRepo)
-//  lazy val routes = new com.bridglabz.GreetingRouteConfig(userRegistry).getRoute
-//
-//  "USerRoutes" should{
-//    "return no user if no present " in {
-//      val request = HttpRequest(uri = "api/greeting")
-//
-//      Get("api/greeting") ~> routes ~> check{
-//        status should === (StatusCodes.OK)
-//      }
-//    }
-//}
-  "Greeting Api" should{
+class RestTest extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest {
+
+  val routing = new GreetingRouteConfig
+  "Greeting Api" should {
     "add information of users" in {
       val jsonRequest = ByteString(
         s"""
            |{
            |    "name":"Ranbir"
-           |    "message":"Hello"
+           |    "message":"HI"
            |}
         """.stripMargin)
       val postRequest = HttpRequest(
@@ -48,9 +25,18 @@ class RestTest extends WordSpec with Matchers with ScalatestRouteTest with Scala
         uri = "api/greeting/create",
         entity = HttpEntity(MediaTypes.`application/json`, jsonRequest)
       )
-
-      postRequest ~> routes ~>check{
-        status should ===(StatusCodes.Created)
+      postRequest ~>Route.seal(routes) ~> check {
+//        status should ===(StatusCodes.Created)
+        status.isSuccess() shouldEqual true
+      }
+    }
+  }
+  "GET api" should {
+    "Return value " in {
+      val getRequest = HttpRequest(HttpMethods.GET, uri = "api/greeting")
+      getRequest ~>Route.seal(routes) ~> check {
+//        status.isSuccess() shouldEqual true
+        assert(status === StatusCodes.OK)
       }
     }
   }
