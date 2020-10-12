@@ -4,10 +4,16 @@ import akka.actor.{Actor, ActorLogging}
 import com.bridglabz.models.GreetingRequest
 import com.bridglabz.service.GreetingService
 
-
+/**
+ * Class in which actors are used for communication
+ */
 class GreetingActor extends Actor with ActorLogging {
   private val greetingService: GreetingService = new GreetingService()
 
+  /**
+   * For creating actors we have to extend actor trait and implement receive
+   * @return
+   */
   override def receive: Receive = {
 
     case SAVE(greeting: GreetingRequest) =>
@@ -20,6 +26,7 @@ class GreetingActor extends Actor with ActorLogging {
       log.debug("Unhandled message!")
   }
 }
+
 
 sealed trait GreetingActorMessage
 

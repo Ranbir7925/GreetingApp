@@ -12,21 +12,24 @@ import akka.pattern.Patterns
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
-import com.bridglabz.controller.{GreetingActor, JsonUtils, SAVE, SEARCH_ALL, TimeUtils}
+import com.bridglabz.controller._
 import com.bridglabz.models.{Greeting, GreetingRequest}
 import spray.json.enrichAny
 
 import scala.concurrent.Await
 
-
+/**
+ *
+ * @param system
+ */
 class GreetingRouteConfig(implicit val system: ActorSystem) extends JsonUtils {
   val greetingActor: ActorRef = system.actorOf(Props(new GreetingActor()))
 
-  implicit val mat: ActorMaterializer = ActorMaterializer()
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  lazy val getRoute: Route = {
-    PathDirectives.pathPrefix("greeting") {
-      concat(
+  lazy val getRoute: Route =
+    PathDirectives.pathPrefix("api") {
+//      concat(
         path("create") {
           post {
             entity(as[GreetingRequest]) { greeting =>
@@ -34,15 +37,15 @@ class GreetingRouteConfig(implicit val system: ActorSystem) extends JsonUtils {
               RouteDirectives.complete(HttpEntity("Data saved successfully!"))
             }
           }
-        },
-        //                path("search") {
+        }~
+        //  }
+        //                        path("search") {
         get {
           val resultFuture = Patterns.ask(greetingActor, SEARCH_ALL, TimeUtils.timeoutMills)
           val resultSource = Await.result(resultFuture, TimeUtils.atMostDuration).asInstanceOf[Source[Greeting, NotUsed]]
           val resultByteString = resultSource.map { it => ByteString.apply(it.toJson.toString.getBytes()) }
           RouteDirectives.complete(HttpEntity(ContentTypes.`text/plain(UTF-8)`, resultByteString))
         }
-      )
+//      )
     }
-  }
 }
