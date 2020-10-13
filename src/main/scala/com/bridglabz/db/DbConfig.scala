@@ -7,6 +7,9 @@ import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.{MongoClient, MongoCollection}
 
+/**
+ * Connection to Mongo DataBase
+ */
 object DbConfig {
 
   private val registry: CodecRegistry = CodecRegistries.fromProviders(classOf[Greeting])
