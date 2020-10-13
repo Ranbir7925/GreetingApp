@@ -11,13 +11,13 @@ class RestTest extends WordSpec with Matchers with ScalaFutures with ScalatestRo
 
   val routing = new GreetingRouteConfig
 
-  "Greeting Api" should {
+  "POST Api" should {
     "add information of users" in {
       val jsonRequest = ByteString(
         s"""
            |{
-           |    "name":"fsg"
-           |    "message":"Afs"
+           |    "name":"Ranbir",
+           |    "message":"Hello Ranbir"
            |}
         """.stripMargin)
       val postRequest = HttpRequest(
@@ -25,17 +25,43 @@ class RestTest extends WordSpec with Matchers with ScalaFutures with ScalatestRo
         uri = "/api/create",
         entity = HttpEntity(MediaTypes.`application/json`, jsonRequest)
       )
-      postRequest ~>Route.seal(routing.getRoute) ~> check {
-//        status.isSuccess() shouldEqual true
-        assert(status == StatusCodes.Created)
+      postRequest ~> Route.seal(routing.getRoute) ~> check {
+        assert(status == StatusCodes.OK)
+      }
+    }
+  }
+  "POST Api with invalid inputs" should {
+    "must reject adding information of users" in {
+      val jsonRequest = ByteString(
+        s"""
+           |{
+           |    "name":"",
+           |    "message":""
+           |}
+        """.stripMargin)
+      val postRequest = HttpRequest(
+        HttpMethods.POST,
+        uri = "/api/create",
+        entity = HttpEntity(MediaTypes.`application/json`, jsonRequest)
+      )
+      postRequest ~> Route.seal(routing.getRoute) ~> check {
+        assert(status == StatusCodes.BadRequest)
       }
     }
   }
   "GET api" should {
-    "Return value " in {
-      val getRequest = HttpRequest(HttpMethods.GET, uri = "/api")
-      getRequest ~>Route.seal(routing.getRoute) ~> check {
-//        status.isSuccess() shouldEqual true
+    "Return all value " in {
+      val getRequest = HttpRequest(HttpMethods.GET, uri = "/api/greetings")
+      getRequest ~> Route.seal(routing.getRoute) ~> check {
+        assert(status == StatusCodes.OK)
+      }
+    }
+  }
+
+  "GET api" should {
+    "Return value by id" in {
+      val getRequest = HttpRequest(HttpMethods.GET, uri = "/api/greeting?id=22f212cc-f7a4-4d57-a4c8-f688129a8ee1")
+      getRequest ~> Route.seal(routing.getRoute) ~> check {
         assert(status == StatusCodes.OK)
       }
     }
